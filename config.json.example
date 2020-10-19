@@ -1,0 +1,4 @@
+{
+    "device": "/path/to/device",
+    "seconds_per_cycle": 10
+}
