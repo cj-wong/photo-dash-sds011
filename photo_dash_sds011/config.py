@@ -12,7 +12,7 @@ FH = logging.handlers.RotatingFileHandler(
     'photo-dash-sds011.log',
     maxBytes=40960,
     backupCount=5,
-)
+    )
 FH.setLevel(logging.DEBUG)
 
 CH = logging.StreamHandler()
@@ -20,7 +20,7 @@ CH.setLevel(logging.WARNING)
 
 FORMATTER = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+    )
 FH.setFormatter(FORMATTER)
 CH.setFormatter(FORMATTER)
 
@@ -92,12 +92,12 @@ _LABELS_COLORS = [
     ('Unhealthy', '#FF0000'),
     ('Very Unhealthy', '#8F3F97'),
     ('Hazardous', '#660033')
-]
+    ]
 
 _AQ_PM_RANGES = {
     2.5: [0, 12, 35, 55, 150, 250],
     10: [0, 55, 155, 255, 355, 425]
-}
+    }
 
 RANGES = {}
 
@@ -113,7 +113,7 @@ for pm, ranges in _AQ_PM_RANGES.items():
 
         RANGES[pm].append(
             AirQuality(label, pm, color, lower, upper)
-        )
+            )
 
 
 def get_range(pm: float, reading: float) -> Dict[str, Union[str, float]]:
