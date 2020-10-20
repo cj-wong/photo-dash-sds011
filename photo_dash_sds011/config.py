@@ -127,8 +127,14 @@ def get_range(pm: float, reading: float) -> Dict[str, Union[str, float]]:
         Dict[str, Union[str, float]]: a dictionary containing the
             range's parameters
 
+    Raises:
+        KeyError: if pm wasn't 2.5 or 10
+
     """
-    for pm, aqs in RANGES.items():
-        for aq in aqs:
+    try:
+        for aq in RANGES[pm]:
             if aq.is_range(reading):
                 return asdict(aq)
+    except KeyError as e:
+        LOGGER.error(f'pm should be 2.5 or 10; supplied {pm}')
+        raise e
