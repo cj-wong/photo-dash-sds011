@@ -2,7 +2,7 @@ import time
 
 import serial
 
-import config
+from photo_dash_sds011 import config
 
 # Adapted from:
 #   https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
