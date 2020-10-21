@@ -17,6 +17,8 @@ class SDS011:
 
     """
 
+    _SLICES = {2.5: 2, 10: 4}
+
     def __init__(self) -> None:
         """Initialize the serial device given the path config.DEVICE."""
         self.sensor = serial.Serial(config.DEVICE)
@@ -35,25 +37,26 @@ class SDS011:
             for _ in range(10):
                 datum = self.sensor.read()
                 self.data.append(datum)
-            pm2_5 = self.read_data_from_bytes(2, 4)
-            pm10 = self.read_data_from_bytes(4, 6)
 
-    def read_data_from_bytes(self, start: int, stop: int) -> int:
+            for pm, start in self._SLICES.items():
+                reading = self.read_data_from_bytes(start)
+                aq_dict = config.get_range(pm, reading)
+
+    def read_data_from_bytes(self, start: int) -> int:
         """Read the particulate data from bytes from the sensor.
 
         Args:
-            start (int): starting index
-            stop (int): stopping index; reading stops before reaching this
-                index
+            start (int): starting index; 'stop' is start + 2
 
         Returns:
             int: particulate reading of unit μg / m^3
                 (micrograms per cubic meter)
 
         """
+        stop = start + 2
         return int.from_bytes(
             b''.join(self.data[start:stop]), byteorder='little'
-        ) / 10
+            ) / 10
 
 
 if __name__ == '__main__':
