@@ -27,6 +27,14 @@ CH.setFormatter(FORMATTER)
 LOGGER.addHandler(FH)
 LOGGER.addHandler(CH)
 
+CONFIG_LOAD_ERRORS = (
+    FileNotFoundError,
+    KeyError,
+    TypeError,
+    ValueError,
+    json.decoder.JSONDecodeError,
+    )
+
 
 try:
     with open('config.json', 'r') as f:
@@ -37,7 +45,7 @@ try:
         # Coerce a type conversion. If this doesn't work, ValueError will be
         # correctly raised and terminate the program.
         SLEEP = int(SLEEP)
-except (FileNotFoundError, KeyError, TypeError, ValueError) as e:
+except CONFIG_LOAD_ERRORS as e:
     LOGGER.error('config.json doesn\'t exist or is malformed.')
     LOGGER.error(f'More information: {e}')
     raise e
