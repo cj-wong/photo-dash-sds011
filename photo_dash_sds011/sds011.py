@@ -54,13 +54,13 @@ class SDS011:
                     {
                         'type': 'gauge',
                         'color': [aq_dict['color']],
-                        'values': [aq_dict['lower'], aq_dict['upper']],
+                        'range': [aq_dict['lower'], aq_dict['upper']],
                         'value': reading,
                         },
                     {
                         'type': 'gauge',
                         'color': config.FULL_RANGE[pm]['color'],
-                        'values': config.FULL_RANGE[pm]['values'],
+                        'range': config.FULL_RANGE[pm]['values'],
                         'value': reading,
                         }
                     ]
@@ -70,7 +70,6 @@ class SDS011:
                     'title': f'Air Quality - PM{pm}',
                     'sections': sections,
                     }
-
 
                 try:
                     r = requests.put(config.ENDPOINT, json=data)
