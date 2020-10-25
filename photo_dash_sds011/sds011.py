@@ -48,8 +48,8 @@ class SDS011:
                 sections = [
                     {
                         'type': 'text',
-                        'color': f'Quality: {aq_dict["color"]}',
-                        'value': aq_dict['label']
+                        'color': aq_dict['color'],
+                        'value': f'Quality: {aq_dict["label"]}'
                         },
                     {
                         'type': 'gauge',
