@@ -91,7 +91,3 @@ class SDS011:
         return int.from_bytes(
             b''.join(self.data[start:stop]), byteorder='little'
             ) / 10
-
-
-if __name__ == '__main__':
-    s = SDS011()
