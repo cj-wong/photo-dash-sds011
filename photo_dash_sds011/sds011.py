@@ -35,6 +35,7 @@ class SDS011:
             # Sleep before running code to ensure that the sensor is
             # initialized on first run, as per the specifications.
             time.sleep(config.SLEEP)
+            config.LOGGER.info('Woke up after sleeping. Running loop()')
             self.data = []
             for _ in range(10):
                 datum = self.sensor.read()
