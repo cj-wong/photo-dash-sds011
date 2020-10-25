@@ -41,6 +41,7 @@ try:
         CONFIG = json.load(f)
     DEVICE = CONFIG['device']
     SLEEP = CONFIG['seconds_per_cycle']
+    ENDPOINT = CONFIG['endpoint']
     if not isinstance(SLEEP, int):
         # Coerce a type conversion. If this doesn't work, ValueError will be
         # correctly raised and terminate the program.
@@ -107,6 +108,11 @@ _AQ_PM_RANGES = {
     10: [0, 55, 155, 255, 355, 425]
     }
 
+AQ_UPPER = {
+    2.5: 400,
+    10: 500
+    }
+
 RANGES = {}
 
 for pm, ranges in _AQ_PM_RANGES.items():
@@ -146,3 +152,25 @@ def get_range(pm: float, reading: float) -> Dict[str, Union[str, float]]:
     except KeyError as e:
         LOGGER.error(f'pm should be 2.5 or 10; supplied {pm}')
         raise e
+
+
+def get_full_range() -> None:
+    """Get the full range of air quality.
+
+    Because there is no actual maximum, AQ_UPPER will be used
+    to cap numbers.
+
+    """
+    rng = {}
+    for pm in (2.5, 10):
+        rng[pm]['color'] = []
+        rng[pm]['values'] = []
+        for aq in RANGES[pm]:
+            rng[pm]['color'].append(aq.color)
+            rng[pm]['values'].append(aq.lower)
+        rng[pm]['values'].append(AQ_UPPER[pm])
+
+    return rng
+
+
+FULL_RANGE = get_full_range()

@@ -1,8 +1,10 @@
 import time
 
+import requests
 import serial
 
 from photo_dash_sds011 import config
+
 
 # Adapted from:
 #   https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
@@ -41,6 +43,38 @@ class SDS011:
             for pm, start in self._SLICES.items():
                 reading = self.read_data_from_bytes(start)
                 aq_dict = config.get_range(pm, reading)
+
+                sections = [
+                    {
+                        'type': 'text',
+                        'color': f'Quality: {aq_dict["color"]}',
+                        'value': aq_dict['label']
+                        },
+                    {
+                        'type': 'gauge',
+                        'color': [aq_dict['color']],
+                        'values': [aq_dict['lower'], aq_dict['upper']],
+                        'value': reading,
+                        },
+                    {
+                        'type': 'gauge',
+                        'color': config.FULL_RANGE['color'][pm],
+                        'values': config.FULL_RANGE['values'][pm],
+                        'value': reading,
+                        }
+                    ]
+
+                data = {
+                    'module': f'photo-dash-sds011-pm{pm}',
+                    'title': f'Air Quality - PM{pm}',
+                    'data': sections,
+                    }
+
+                try:
+                    r = requests.put(config.ENDPOINT, data=data)
+                except Exception as e: # Catching broad Exceptions for now
+                    config.LOGGER.error(e)
+                config.LOGGER.info(r.status_code)
 
     def read_data_from_bytes(self, start: int) -> int:
         """Read the particulate data from bytes from the sensor.
