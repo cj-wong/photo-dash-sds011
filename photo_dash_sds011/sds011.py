@@ -59,8 +59,8 @@ class SDS011:
                         },
                     {
                         'type': 'gauge',
-                        'color': config.FULL_RANGE['color'][pm],
-                        'values': config.FULL_RANGE['values'][pm],
+                        'color': config.FULL_RANGE[pm]['color'],
+                        'values': config.FULL_RANGE[pm]['values'],
                         'value': reading,
                         }
                     ]
