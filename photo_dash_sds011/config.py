@@ -163,6 +163,7 @@ def get_full_range() -> None:
     """
     rng = {}
     for pm in (2.5, 10):
+        rng[pm] = {}
         rng[pm]['color'] = []
         rng[pm]['values'] = []
         for aq in RANGES[pm]:
