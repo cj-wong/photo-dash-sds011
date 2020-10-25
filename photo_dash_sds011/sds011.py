@@ -68,8 +68,9 @@ class SDS011:
                 data = {
                     'module': f'photo-dash-sds011-pm{pm}',
                     'title': f'Air Quality - PM{pm}',
-                    'data': sections,
+                    'sections': sections,
                     }
+
 
                 try:
                     r = requests.put(config.ENDPOINT, json=data)
