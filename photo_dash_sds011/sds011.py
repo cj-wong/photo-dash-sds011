@@ -72,7 +72,7 @@ class SDS011:
                     }
 
                 try:
-                    r = requests.put(config.ENDPOINT, data=data)
+                    r = requests.put(config.ENDPOINT, json=data)
                 except Exception as e: # Catching broad Exceptions for now
                     config.LOGGER.error(e)
                 config.LOGGER.info(r.status_code)
