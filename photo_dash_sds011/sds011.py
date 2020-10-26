@@ -14,7 +14,10 @@ class SDS011:
     """Represents the SDS011 air quality sensor.
 
     Attributes:
-        data (List[])
+        data (List[bytes]): a list of bytes as described in specs;
+            see here: http://ecksteinimg.de/Datasheet
+                /SDS011%20laser%20PM2.5%20sensor%20specification-V1.3.pdf
+            data will be cleared every loop start
         sensor (serial.serialposix.Serial): the SDS011 over serial
 
     """

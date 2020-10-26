@@ -2,7 +2,7 @@ import json
 import logging
 import logging.handlers
 from dataclasses import asdict, dataclass
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 
 LOGGER = logging.getLogger('photo-dash-sds011')
@@ -35,7 +35,6 @@ CONFIG_LOAD_ERRORS = (
     json.decoder.JSONDecodeError,
     )
 
-
 try:
     with open('config.json', 'r') as f:
         CONFIG = json.load(f)
@@ -50,6 +49,9 @@ except CONFIG_LOAD_ERRORS as e:
     LOGGER.error('config.json doesn\'t exist or is malformed.')
     LOGGER.error(f'More information: {e}')
     raise e
+
+
+_PM_ATTRIBS = Dict[float, Dict[str, List[Union[int, str]]]]
 
 
 @dataclass
@@ -154,7 +156,7 @@ def get_range(pm: float, reading: float) -> Dict[str, Union[str, float]]:
         raise e
 
 
-def get_full_range() -> None:
+def get_full_range() -> _PM_ATTRIBS:
     """Get the full range of air quality.
 
     Because there is no actual maximum, AQ_UPPER will be used
