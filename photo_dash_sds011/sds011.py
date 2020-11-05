@@ -56,6 +56,7 @@ class SDS011:
             response = requests.get(config.ENDPOINT)
             response.raise_for_status()
             quiet_hours = response.json()
+            config.LOGGER.info(f'Updating quiet hours: {quiet_hours}')
             self.quiet_setup = True
             self.quiet_start = quiet_hours['start']
             self.quiet_end = quiet_hours['end']
