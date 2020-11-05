@@ -47,7 +47,7 @@ class SDS011:
         now = pendulum.now()
 
         try:
-            if now < self.last_check + timedelta(day=1):
+            if now < self.last_check + timedelta(days=1):
                 return
         except AttributeError:
             pass
