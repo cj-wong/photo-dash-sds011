@@ -58,8 +58,8 @@ class SDS011:
             quiet_hours = response.json()
             config.LOGGER.info(f'Updating quiet hours: {quiet_hours}')
             self.quiet_setup = True
-            self.quiet_start = quiet_hours['start']
-            self.quiet_end = quiet_hours['end']
+            self.quiet_start = quiet_hours['quiet_start']
+            self.quiet_end = quiet_hours['quiet_end']
         except _REQUEST_ERRS:
             self.quiet_setup = False
 
