@@ -53,7 +53,7 @@ class SDS011:
             pass
 
         try:
-            response = requests.get(config.ENDPOINT)
+            response = requests.get(f'{config.ENDPOINT}/quiet')
             response.raise_for_status()
             quiet_hours = response.json()
             config.LOGGER.info(f'Updating quiet hours: {quiet_hours}')
