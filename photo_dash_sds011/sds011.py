@@ -1,10 +1,16 @@
 import time
 
+import pendulum
 import requests
 import serial
 
 from photo_dash_sds011 import config
 
+
+requests_errs = (
+    requests.exceptions.ConnectionError,
+    requests.exceptions.HTTPError,
+    )
 
 # Adapted from:
 #   https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
@@ -15,9 +21,12 @@ class SDS011:
 
     Attributes:
         data (List[bytes]): a list of bytes as described in specs;
+            data will be cleared every loop start; for more information,
             see here: http://ecksteinimg.de/Datasheet
                 /SDS011%20laser%20PM2.5%20sensor%20specification-V1.3.pdf
-            data will be cleared every loop start
+        init_time (pendulum.datetime): when the module was started
+        quiet_start (int): hour to stop reading and sending data
+        quiet_end (int): hour to resume reading and sending data
         sensor (serial.serialposix.Serial): the SDS011 over serial
 
     """
@@ -27,6 +36,16 @@ class SDS011:
     def __init__(self) -> None:
         """Initialize the serial device given the path config.DEVICE."""
         self.sensor = serial.Serial(config.DEVICE)
+        self.init_time = pendulum.now()
+        try:
+            response = requests.get(config.ENDPOINT)
+            response.raise_for_status()
+            quiet_hours = response.json()
+            self.quiet_setup = True
+            self.quiet_start = quiet_hours['start']
+            self.quiet_end = quiet_hours['end']
+        except requests_errs:
+            self.quiet_setup = False
 
     def loop(self) -> None:
         """Loop through reading the sensor every n seconds.
@@ -38,6 +57,9 @@ class SDS011:
             # Sleep before running code to ensure that the sensor is
             # initialized on first run, as per the specifications.
             time.sleep(config.SLEEP)
+            if self.quiet_setup:
+                if self.in_quiet_hours():
+                    continue
             config.LOGGER.info('Woke up after sleeping. Running loop()')
             self.data = []
             for _ in range(10):
@@ -80,14 +102,14 @@ class SDS011:
                     config.LOGGER.error(e)
                 config.LOGGER.info(r.status_code)
 
-    def read_data_from_bytes(self, start: int) -> int:
+    def read_data_from_bytes(self, start: int) -> float:
         """Read the particulate data from bytes from the sensor.
 
         Args:
             start (int): starting index; 'stop' is start + 2
 
         Returns:
-            int: particulate reading of unit μg / m^3
+            float: particulate reading of unit μg / m^3
                 (micrograms per cubic meter)
 
         """
@@ -95,3 +117,23 @@ class SDS011:
         return int.from_bytes(
             b''.join(self.data[start:stop]), byteorder='little'
             ) / 10
+
+    def in_quiet_hours(self) -> bool:
+        """Check whether the current time is within quiet hours.
+
+        Returns:
+            bool: True if within quiet hours
+
+        Raises:
+            AttributeError: if quiet hours weren't defined in config
+
+        """
+        now = pendulum.now()
+        hour = now.hour
+        if self.quiet_start > self.quiet_end:
+            if hour >= self.quiet_start or hour < self.quiet_end:
+                return True
+        elif hour in range(self.quiet_start, self.quiet_end):
+            return True
+
+        return False
