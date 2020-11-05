@@ -1,4 +1,5 @@
-import time
+from datetime import timedelta
+from time import sleep
 
 import pendulum
 import requests
@@ -7,7 +8,7 @@ import serial
 from photo_dash_sds011 import config
 
 
-requests_errs = (
+_REQUEST_ERRS = (
     requests.exceptions.ConnectionError,
     requests.exceptions.HTTPError,
     )
@@ -36,7 +37,21 @@ class SDS011:
     def __init__(self) -> None:
         """Initialize the serial device given the path config.DEVICE."""
         self.sensor = serial.Serial(config.DEVICE)
-        self.init_time = pendulum.now()
+
+    def setup_quiet_hours(self) -> None:
+        """Set up quiet hours for the module.
+
+        This function should be run every 24h to get the latest info.
+
+        """
+        now = pendulum.now()
+
+        try:
+            if now < self.last_check + timedelta(day=1):
+                return
+        except AttributeError:
+            pass
+
         try:
             response = requests.get(config.ENDPOINT)
             response.raise_for_status()
@@ -44,8 +59,10 @@ class SDS011:
             self.quiet_setup = True
             self.quiet_start = quiet_hours['start']
             self.quiet_end = quiet_hours['end']
-        except requests_errs:
+        except _REQUEST_ERRS:
             self.quiet_setup = False
+
+        self.last_check = now
 
     def loop(self) -> None:
         """Loop through reading the sensor every n seconds.
@@ -56,7 +73,10 @@ class SDS011:
         while True:
             # Sleep before running code to ensure that the sensor is
             # initialized on first run, as per the specifications.
-            time.sleep(config.SLEEP)
+            sleep(config.SLEEP)
+
+            self.setup_quiet_hours()
+
             if self.quiet_setup:
                 if self.in_quiet_hours():
                     continue
