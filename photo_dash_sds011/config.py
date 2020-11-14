@@ -5,11 +5,13 @@ from dataclasses import asdict, dataclass
 from typing import Dict, List, Union
 
 
-LOGGER = logging.getLogger('photo-dash-sds011')
+_LOGGER_NAME = 'photo-dash-sds011'
+
+LOGGER = logging.getLogger(_LOGGER_NAME)
 LOGGER.setLevel(logging.DEBUG)
 
 FH = logging.handlers.RotatingFileHandler(
-    'photo-dash-sds011.log',
+    f'{_LOGGER_NAME}.log',
     maxBytes=40960,
     backupCount=5,
     )
@@ -38,18 +40,21 @@ CONFIG_LOAD_ERRORS = (
 try:
     with open('config.json', 'r') as f:
         CONFIG = json.load(f)
+    ENDPOINT = CONFIG['endpoint']
+    # Module-specific config continues below
     DEVICE = CONFIG['device']
     SLEEP = CONFIG['seconds_per_cycle']
-    ENDPOINT = CONFIG['endpoint']
     if not isinstance(SLEEP, int):
         # Coerce a type conversion. If this doesn't work, ValueError will be
         # correctly raised and terminate the program.
         SLEEP = int(SLEEP)
+    # Module-specific config ends here
 except CONFIG_LOAD_ERRORS as e:
     LOGGER.error('config.json doesn\'t exist or is malformed.')
     LOGGER.error(f'More information: {e}')
     raise e
 
+# Remaining module-specific code continues below
 
 _PM_ATTRIBS = Dict[float, Dict[str, List[Union[int, str]]]]
 

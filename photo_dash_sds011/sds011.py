@@ -1,23 +1,17 @@
-from datetime import timedelta
 from time import sleep
 
-import pendulum
 import requests
 import serial
 
+from photo_dash_sds011 import base
 from photo_dash_sds011 import config
 
-
-_REQUEST_ERRS = (
-    requests.exceptions.ConnectionError,
-    requests.exceptions.HTTPError,
-    )
 
 # Adapted from:
 #   https://www.raspberrypi.org/blog/monitor-air-quality-with-a-raspberry-pi/
 
 
-class SDS011:
+class SDS011(base.BaseModule):
     """Represents the SDS011 air quality sensor.
 
     Attributes:
@@ -37,33 +31,6 @@ class SDS011:
     def __init__(self) -> None:
         """Initialize the serial device given the path config.DEVICE."""
         self.sensor = serial.Serial(config.DEVICE)
-
-    def setup_quiet_hours(self) -> None:
-        """Set up quiet hours for the module.
-
-        This function should be run every 24h to get the latest info.
-
-        """
-        now = pendulum.now()
-
-        try:
-            if now < self.last_check + timedelta(days=1):
-                return
-        except AttributeError:
-            pass
-
-        try:
-            response = requests.get(f'{config.ENDPOINT}/quiet')
-            response.raise_for_status()
-            quiet_hours = response.json()
-            config.LOGGER.info(f'Updating quiet hours: {quiet_hours}')
-            self.quiet_setup = True
-            self.quiet_start = quiet_hours['quiet_start']
-            self.quiet_end = quiet_hours['quiet_end']
-        except _REQUEST_ERRS:
-            self.quiet_setup = False
-
-        self.last_check = now
 
     def loop(self) -> None:
         """Loop through reading the sensor every n seconds.
@@ -138,23 +105,3 @@ class SDS011:
         return int.from_bytes(
             b''.join(self.data[start:stop]), byteorder='little'
             ) / 10
-
-    def in_quiet_hours(self) -> bool:
-        """Check whether the current time is within quiet hours.
-
-        Returns:
-            bool: True if within quiet hours
-
-        Raises:
-            AttributeError: if quiet hours weren't defined in config
-
-        """
-        now = pendulum.now()
-        hour = now.hour
-        if self.quiet_start > self.quiet_end:
-            if hour >= self.quiet_start or hour < self.quiet_end:
-                return True
-        elif hour in range(self.quiet_start, self.quiet_end):
-            return True
-
-        return False
