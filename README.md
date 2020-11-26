@@ -2,9 +2,9 @@
 
 ## Overview
 
-This is the SDS011 module for `photo-dash`. It takes air quality readings (both PM2.5 and PM10, unit in `μg / m^3`) from a [Nova] SDS011 module and converts it to a request to the `photo-dash` endpoint.
+The `photo-dash` project is a series of modules and an endpoint. This repository specifically is a reader for an air quality reader, the [Nova] SDS011 module.
 
-The `photo-dash` project is a series of modules and an endpoint. The endpoint sends images to a dumb digital photo frame.
+This is the SDS011 module for `photo-dash`. It takes air quality readings (both PM2.5 and PM10, unit in `μg / m^3`) from a SDS011 module and converts it to a request to the `photo-dash` endpoint.
 
 Air quality ranges have been determined from the [AirNow.gov] [AQI Calculator][AQI]. On the main page of airnow.gov, the ranges (and colors) of their "Air Quality Index" have been plugged into the calculator to determine the corresponding levels of PM2.5 and PM10 particulate readings. This information is available in the [config](photo_dash_sds011/config.py) module.
 
