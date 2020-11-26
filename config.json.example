@@ -1,5 +1,6 @@
 {
     "device": "/path/to/device",
     "seconds_per_cycle": 10,
+    "disconnect_in_quiet_hours": false,
     "endpoint": "w.x.y.z:8000"
 }

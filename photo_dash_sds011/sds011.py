@@ -47,7 +47,18 @@ class SDS011(base.BaseModule):
 
             if self.quiet_setup:
                 if self.in_quiet_hours():
+                    if config.DC_QH:
+                        self.sensor.close()
+                    self.sleep_quiet_hours()
                     continue
+
+            # In the case that quiet hours were established during first run
+            # and removed from the endpoint afterwards, the sensor may not
+            # be in the open state. Because serial.Serial.open() may raise
+            # an exception if the sensor is already open, just check prior.
+            if not self.sensor.isOpen():
+                self.sensor.open()
+
             config.LOGGER.info('Woke up after sleeping. Running loop()')
             self.data = []
             for _ in range(10):

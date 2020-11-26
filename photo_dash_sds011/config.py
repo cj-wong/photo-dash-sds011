@@ -59,6 +59,12 @@ except CONFIG_LOAD_ERRORS as e:
 _PM_ATTRIBS = Dict[float, Dict[str, List[Union[int, str]]]]
 
 
+try:
+    DC_QH = CONFIG['disconnect_in_quiet_hours']
+except KeyError:
+    DC_QH = False
+
+
 @dataclass
 class AirQuality:
     """Represents air quality ranges.
