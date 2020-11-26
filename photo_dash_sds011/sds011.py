@@ -3,6 +3,7 @@ from time import sleep
 import requests
 import serial
 
+from photo_dash_sds011 import air_quality
 from photo_dash_sds011 import base
 from photo_dash_sds011 import config
 
@@ -67,7 +68,7 @@ class SDS011(base.BaseModule):
 
             for pm, start in self._SLICES.items():
                 reading = self.read_data_from_bytes(start)
-                aq_dict = config.get_range(pm, reading)
+                aq_dict = air_quality.AQS[pm].get_range(reading)
 
                 sections = [
                     {
@@ -83,8 +84,8 @@ class SDS011(base.BaseModule):
                         },
                     {
                         'type': 'gauge',
-                        'color': config.FULL_RANGE[pm]['color'],
-                        'range': config.FULL_RANGE[pm]['values'],
+                        'color': air_quality.COLORS,
+                        'range': air_quality.AQS[pm].get_all_ranges(),
                         'value': reading,
                         }
                     ]
