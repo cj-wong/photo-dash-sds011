@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.2.0] - 2020-11-25
 ### Changed
-- In reference of issue #2: because [config.py] was considerably bloated with air quality data (variables and classes), the air quality data was moved to a separate [module][air_quality.py]. Subsequently, what little tests I wrote will need to be re-written. Although functionality has not been changed, I believe the addition of this module should be treated as minor version change.
+- In reference of issue #2: because [config.py] was considerably bloated with air quality data (variables and classes), the air quality data was moved to a separate [module][air_quality.py]. Although functionality has not been changed, I believe the addition of this module should be treated as minor version change.
+    - Test 3 was removed due to changes in `get_range`. It is no longer a module function; it is part of the class `AirQuality` and is not called outside of the module. Logging is also not present in the new module.
 
 ## [0.1.2] - 2020-11-25
 ### Added
