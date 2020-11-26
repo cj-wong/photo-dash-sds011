@@ -77,4 +77,6 @@ class BaseModule:
             pendulum.today()
             + timedelta(days=days, hours=self.quiet_end)
             )
-        sleep((sleep_until - now).seconds)
+        duration = (sleep_until - now).seconds
+        config.LOGGER.info(f'Sleeping for {duration} seconds [quiet hours]')
+        sleep(duration)
