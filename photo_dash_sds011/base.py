@@ -1,4 +1,5 @@
 from datetime import timedelta
+from time import sleep
 
 import pendulum
 import requests
@@ -65,3 +66,15 @@ class BaseModule:
             return True
 
         return False
+
+    def sleep_quiet_hours(self) -> None:
+        """Sleep until quiet hours are over."""
+        if not self.in_quiet_hours():
+            return
+        now = pendulum.now()
+        days = 1 if now.hour > self.quiet_end else 0
+        sleep_until = (
+            pendulum.today()
+            + timedelta(days=days, hours=self.quiet_end)
+            )
+        sleep((sleep_until - now).seconds)
