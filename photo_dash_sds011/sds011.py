@@ -67,6 +67,9 @@ class SDS011(base.BaseModule):
                 self.data.append(datum)
 
             for pm, start in self._SLICES.items():
+                # Might be necessary to give the endpoint some time
+                # between responses
+                sleep(10)
                 reading = self.read_data_from_bytes(start)
                 aq_dict = air_quality.AQS[pm].get_range(reading)
 
