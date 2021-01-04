@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.1] - 2021-01-03
+### Changed
+- Linted with `mypy`.
+- [air_quality.py] was changed most.
+    - Some `int`s were changed to `float`s.
+    - `air_quality.AirQuality` now has its descendent subclass attributes type-declared in its `init`.
+    - `airquality.AirQuality.get_range()` may now raise `ValueError` if the value provided didn't match any range.
+
 ## [0.2.0] - 2020-11-25
 ### Changed
 - In reference of issue #2: because [config.py] was considerably bloated with air quality data (variables and classes), the air quality data was moved to a separate [module][air_quality.py]. Although functionality has not been changed, I believe the addition of this module should be treated as minor version change.
