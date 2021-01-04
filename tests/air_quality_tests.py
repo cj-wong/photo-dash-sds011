@@ -13,7 +13,7 @@ class TestConfig(unittest.TestCase):
 
     """
 
-    def test_get_range_lower_bound(self) -> bool:
+    def test_get_range_lower_bound(self) -> None:
         """Test get_range() lower bounds. Test #1 in class docstring."""
         self.assertEqual(
             air_quality.AQS[2.5].get_range(0),
@@ -24,7 +24,7 @@ class TestConfig(unittest.TestCase):
             air_quality.asdict(air_quality.AQS[10].AQ_RANGES[4])
             )
 
-    def test_get_range_high_reading(self) -> bool:
+    def test_get_range_high_reading(self) -> None:
         """Test get_range() for a very high reading. Test #2."""
         for pm in (2.5, 10):
             aq = air_quality.AQS[pm]

@@ -24,11 +24,11 @@ class AirQualityRange:
 
     DICT_TYPE = Dict[str, Union[str, float]]
 
-    def in_range(self, reading: int) -> bool:
+    def in_range(self, reading: float) -> bool:
         """Check if a reading fits within the range.
 
         Args:
-            reading (int): an air quality reading
+            reading (float): an air quality reading
 
         Returns:
             bool: True if the reading corresponds to this range
@@ -77,7 +77,10 @@ class AirQuality:
 
     def __init__(self) -> None:
         """In the subclasses, set self.size to the appropriate value."""
-        pass
+        self.AQ_RANGES: List[AirQualityRange]
+        self.RANGES: List[int]
+        self.UPPER: int
+        self.size: float
 
     def get_all_colors(self) -> List[str]:
         """Get all the colors on the gauge for air quality.
@@ -108,10 +111,15 @@ class AirQuality:
             AirQualityRange.DICT_TYPE: a dictionary containing the
                 range's parameters
 
+        Raise:
+            ValueError: the range did not match any AQ range
+
         """
         for aqr in self.AQ_RANGES:
             if aqr.in_range(reading):
                 return asdict(aqr)
+
+        raise ValueError(f'{reading} could not be matched to any range!')
 
     def populate_range_list(self) -> None:
         """Populate the list of AQ ranges."""

@@ -18,7 +18,7 @@ class BaseModule:
 
     def __init__(self) -> None:
         """Nothing is initialized within the base module."""
-        pass
+        self.last_check = None
 
     def setup_quiet_hours(self) -> None:
         """Set up quiet hours for the module.
@@ -28,11 +28,9 @@ class BaseModule:
         """
         now = pendulum.now()
 
-        try:
+        if self.last_check:
             if now < self.last_check + timedelta(days=1):
                 return
-        except AttributeError:
-            pass
 
         try:
             response = requests.get(f'{config.ENDPOINT}/quiet')
