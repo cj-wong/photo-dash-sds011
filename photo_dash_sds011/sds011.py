@@ -32,6 +32,7 @@ class SDS011(base.BaseModule):
     def __init__(self) -> None:
         """Initialize the serial device given the path config.DEVICE."""
         self.sensor = serial.Serial(config.DEVICE)
+        super().__init__()
 
     def loop(self) -> None:
         """Loop through reading the sensor every n seconds.

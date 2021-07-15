@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [0.2.2] - 2021-07-14
+### Fixed
+- Fixed [sds011.py] not properly initializing inherited attribute. (Now calls `super().__init__()`)
+
 ## [0.2.1] - 2021-01-03
 ### Changed
 - Linted with `mypy`.
@@ -37,3 +41,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 [air_quality.py]: photo_dash_sds011/air_quality.py
 [config.json]: config.json.example
 [config.py]: photo_dash_sds011/config.py
+[sds011.py]: photo_dash_sds011/sds011.py
